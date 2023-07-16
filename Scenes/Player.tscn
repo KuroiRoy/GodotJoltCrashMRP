@@ -1,0 +1,48 @@
+[gd_scene load_steps=8 format=3 uid="uid://cu3dg7nim57mg"]
+
+[ext_resource type="Script" path="res://Scripts/Players/KinematicCharacterController.cs" id="2_un5i8"]
+[ext_resource type="Script" path="res://Scripts/Players/FirstPersonCamera.cs" id="3_owcae"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_y2rrj"]
+radius = 0.3
+height = 1.7
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ha3v6"]
+sky_top_color = Color(0.372549, 0.705882, 0.976471, 1)
+sky_horizon_color = Color(0.345098, 0.607843, 0.737255, 1)
+
+[sub_resource type="Sky" id="Sky_f8gnj"]
+sky_material = SubResource("ProceduralSkyMaterial_ha3v6")
+
+[sub_resource type="Environment" id="Environment_vp8ug"]
+background_mode = 2
+sky = SubResource("Sky_f8gnj")
+ambient_light_color = Color(0.286275, 0.396078, 0.494118, 1)
+ssao_enabled = true
+ssil_enabled = true
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_su5wv"]
+
+[node name="Player" type="Node3D"]
+
+[node name="CharacterController" type="CharacterBody3D" parent="." node_paths=PackedStringArray("camera", "groundShapeCast")]
+script = ExtResource("2_un5i8")
+camera = NodePath("FirstPersonCamera")
+groundShapeCast = NodePath("GroundShapeCast")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterController"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+shape = SubResource("CapsuleShape3D_y2rrj")
+
+[node name="FirstPersonCamera" type="Camera3D" parent="CharacterController"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.42462, 0)
+environment = SubResource("Environment_vp8ug")
+script = ExtResource("3_owcae")
+mouseSensitivity = 0.15
+
+[node name="GroundShapeCast" type="ShapeCast3D" parent="CharacterController"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("CylinderShape3D_su5wv")
+target_position = Vector3(0, -2.6, 0)
+margin = 0.5
+max_results = 1
